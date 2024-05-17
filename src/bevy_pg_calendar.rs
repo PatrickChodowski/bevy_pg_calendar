@@ -46,16 +46,16 @@ impl Plugin for PGCalendarPlugin {
         )
         .insert_resource(CalendarTimer::new(self.hour_length))
         .insert_resource(Weekdays::new())
-        .add_systems(Update,  (update_settings.run_if(if_hour_length_changed), 
-                               update_time.run_if(if_active)).chain())
+        .add_systems(Update,  (update_settings.run_if(if_calendar_hour_length_changed), 
+                               update_time.run_if(if_calendar_active)).chain())
         ;
     }
 }
 
-fn if_active(calendar: Res<Calendar>) -> bool {
+pub fn if_calendar_active(calendar: Res<Calendar>) -> bool {
     calendar.active
 }
-fn if_hour_length_changed(calendar: Res<Calendar>) -> bool {
+pub fn if_calendar_hour_length_changed(calendar: Res<Calendar>) -> bool {
     calendar.old_hour_length != calendar.hour_length
 }
 
