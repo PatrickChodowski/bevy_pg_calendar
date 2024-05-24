@@ -16,7 +16,7 @@ impl Cron {
         return c;
     }
 
-    fn parse(&mut self){
+    pub fn parse(&mut self){
 
         let mut a = self.formula.splitn(4, " ");
         let hour_ = a.next().unwrap();
