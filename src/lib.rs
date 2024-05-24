@@ -1,7 +1,10 @@
-mod bevy_pg_calendar;
+mod calendar;
+mod cron;
 
 pub mod prelude {
-    pub use crate::bevy_pg_calendar::{
+
+    #[cfg(feature = "calendar")]
+    pub use crate::calendar::{
         PGCalendarPlugin, 
         Calendar, 
         Weekdays,
@@ -11,4 +14,7 @@ pub mod prelude {
         if_calendar_active, 
         if_calendar_hour_length_changed
     };
+
+    #[cfg(feature = "cron")]
+    pub use crate::cron::Cron;
 }

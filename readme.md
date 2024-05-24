@@ -8,6 +8,9 @@ Its quite simple, it tracks Years, Weeks, Days and hours passed during the game,
 
 Feel free to use the code it as a template, I dont plan to extend it massively unless I need it in my own project.
 
+## Features:
+- cron
+- calendar
 
 ## Plugin Attributes:
 - active (bool): Toggle if the time is tracked or not
