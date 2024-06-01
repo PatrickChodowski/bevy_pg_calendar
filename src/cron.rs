@@ -1,3 +1,5 @@
+use crate::calendar::Calendar;
+use bevy::ecs::system::Res;
 use serde::{Deserialize,Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -14,6 +16,11 @@ impl Cron {
         let mut c = Cron{formula: formula.to_string(), hours: None, days_month: None, months: None, days_week: None};
         c.parse();
         return c;
+    }
+
+    pub fn is_time(&self, calendar: &Res<Calendar>) -> bool {
+        self.hours.as_ref().unwrap().contains(&calendar.get_current_hour()) && 
+        self.days_week.as_ref().unwrap().contains(&calendar.get_current_weekday())
     }
 
     pub fn parse(&mut self){

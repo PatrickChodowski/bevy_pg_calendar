@@ -1,6 +1,6 @@
 [package]
 name = "bevy_pg_calendar"
-version = "1.0.8"
+version = "1.0.9"
 edition = "2021"
 description = "PG (PatchGames) Calendar to be used with Bevy"
 license = "MIT OR Apache-2.0"
