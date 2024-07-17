@@ -285,7 +285,7 @@ dependencies = [
 
 [[package]]
 name = "bevy_pg_calendar"
-version = "1.0.9"
+version = "1.0.11"
 dependencies = [
  "bevy",
  "chrono",

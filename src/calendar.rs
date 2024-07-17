@@ -1,8 +1,8 @@
 
-use bevy::app::{Plugin, App, Update};
+use bevy::app::{App, Plugin, PreUpdate};
 use bevy::ecs::system::{Resource, ResMut, Res};
 use bevy::ecs::event::{Event, EventWriter};
-use bevy::ecs::schedule::IntoSystemConfigs;
+use bevy::ecs::schedule::{IntoSystemConfigs, SystemSet};
 use bevy::time::{Time, TimerMode, Timer};
 use serde::{Serialize,Deserialize};
 
@@ -37,25 +37,41 @@ impl Plugin for PGCalendarPlugin {
         app
         .add_event::<CalendarNewDayEvent>()
         .add_event::<CalendarNewHourEvent>()
-        .insert_resource(Calendar::new(
-            self.active,
-            self.start_hour, 
-            self.start_weekday, 
-            self.hour_length,
-            &self.start_date)
+        .configure_sets(PreUpdate, PGCalendarSet::Calendar)
+        .insert_resource(
+            Calendar::new(
+                self.active,
+                self.start_hour, 
+                self.start_weekday, 
+                self.hour_length,
+                &self.start_date
+            )
         )
         .insert_resource(CalendarTimer::new(self.hour_length))
         .insert_resource(Weekdays::new())
-        .add_systems(Update,  (update_settings.run_if(if_calendar_hour_length_changed), 
-                               update_time.run_if(if_calendar_active)).chain())
-        ;
+        .add_systems(PreUpdate,  
+            (
+                update_settings.run_if(if_calendar_hour_length_changed), 
+                update_time.run_if(if_calendar_active)
+            ).chain()
+             .in_set(PGCalendarSet::Calendar)
+        );
     }
 }
 
-pub fn if_calendar_active(calendar: Res<Calendar>) -> bool {
+#[derive(Debug, Hash, PartialEq, Eq, Clone, SystemSet)]
+pub enum PGCalendarSet {
+    Calendar
+}
+
+pub fn if_calendar_active(
+    calendar: Res<Calendar>
+) -> bool {
     calendar.active
 }
-pub fn if_calendar_hour_length_changed(calendar: Res<Calendar>) -> bool {
+pub fn if_calendar_hour_length_changed(
+    calendar: Res<Calendar>
+) -> bool {
     calendar.old_hour_length != calendar.hour_length
 }
 
@@ -71,12 +87,13 @@ pub struct CalendarNewHourEvent {
 
 
 // Updates calendar
-fn update_time(time:                Res<Time>, 
-               mut calendar_timer:  ResMut<CalendarTimer>, 
-               mut calendar:        ResMut<Calendar>,
-               mut new_day_event:   EventWriter<CalendarNewDayEvent>,
-               mut new_hour_event:  EventWriter<CalendarNewHourEvent>
-            ){
+fn update_time(
+    time:                Res<Time>, 
+    mut calendar_timer:  ResMut<CalendarTimer>, 
+    mut calendar:        ResMut<Calendar>,
+    mut new_day_event:   EventWriter<CalendarNewDayEvent>,
+    mut new_hour_event:  EventWriter<CalendarNewHourEvent>
+){
 
     calendar_timer.timer.tick(time.delta());
     calendar_timer.calc();
