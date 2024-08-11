@@ -1,8 +1,9 @@
 use crate::calendar::Calendar;
 use bevy::ecs::system::Res;
+use bevy::reflect::Reflect;
 use serde::{Deserialize,Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Reflect)]
 pub struct Cron {
     pub formula:          String,
     pub hours:            Option<Vec<u8>>,
