@@ -4,6 +4,8 @@ use bevy::ecs::system::{Resource, ResMut, Res};
 use bevy::ecs::event::{Event, EventWriter};
 use bevy::ecs::schedule::{IntoSystemConfigs, SystemSet};
 use bevy::time::{Time, TimerMode, Timer};
+use bevy::reflect::Reflect;
+use bevy::ecs::reflect::ReflectResource;
 use serde::{Serialize,Deserialize};
 
 use std::ops::Add;
@@ -35,6 +37,7 @@ impl Default for PGCalendarPlugin {
 impl Plugin for PGCalendarPlugin {
     fn build(&self, app: &mut App) {
         app
+        .register_type::<Calendar>()
         .add_event::<CalendarNewDayEvent>()
         .add_event::<CalendarNewHourEvent>()
         .configure_sets(PreUpdate, PGCalendarSet::Calendar)
@@ -129,11 +132,13 @@ fn update_settings(mut calendar: ResMut<Calendar>,
 }
 
 
-#[derive(Resource, Clone, Serialize, Deserialize)]
+#[derive(Resource, Clone, Serialize, Deserialize, Reflect)]
+#[reflect(Resource)]
 pub struct Calendar {
     days_passed:        u128,
     current_hour:       u8,         // from 0 to 24
     current_weekday:    u8,         // from 1 to 7
+    #[reflect(ignore)]
     current_date:       NaiveDate,
     old_hour_length:    u64,
     hour_length:        u64,
