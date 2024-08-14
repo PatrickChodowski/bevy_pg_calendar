@@ -135,7 +135,7 @@ fn update_settings(mut calendar: ResMut<Calendar>,
 #[derive(Resource, Clone, Serialize, Deserialize, Reflect)]
 #[reflect(Resource)]
 pub struct Calendar {
-    days_passed:        u128,
+    days_passed:        u64,
     current_hour:       u8,         // from 0 to 24
     current_weekday:    u8,         // from 1 to 7
     #[reflect(ignore)]
@@ -162,7 +162,7 @@ impl Calendar {
             current_date:    NaiveDate::parse_from_str(start_date, "%Y-%m-%d").ok().unwrap()
         }
     }
-    pub fn get_days_passed(&self) -> u128 {
+    pub fn get_days_passed(&self) -> u64 {
         self.days_passed
     }
     pub fn add_days_passed(&mut self){
