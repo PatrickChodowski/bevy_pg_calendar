@@ -1,6 +1,6 @@
 [package]
 name = "bevy_pg_calendar"
-version = "1.0.14"
+version = "1.0.15"
 edition = "2021"
 description = "PG (PatchGames) Calendar to be used with Bevy"
 license = "MIT OR Apache-2.0"
@@ -11,8 +11,8 @@ cron = []
 calendar = []
 
 [dependencies]
-bevy = { version = "0.14.1", default-features = false, features = []}
-serde = {version="1.0.203", features = ["derive"] }
-serde_json = {version="1.0.120"}
+bevy = { version = "0.15.0-rc.3", default-features = false, features = []}
+serde = {version="1.0.215", features = ["derive"] }
+serde_json = {version="1.0.132"}
 chrono = {version = "0.4.38", default-features = false, features = ["serde"]}
 
