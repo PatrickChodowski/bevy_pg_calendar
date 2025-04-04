@@ -1,8 +1,9 @@
 
 use bevy::app::{App, Plugin, PreUpdate};
-use bevy::ecs::system::{Resource, ResMut, Res};
+use bevy::ecs::system::{ResMut, Res};
+use bevy::ecs::resource::Resource;
 use bevy::ecs::event::{Event, EventWriter};
-use bevy::ecs::schedule::{IntoSystemConfigs, SystemSet};
+use bevy::ecs::schedule::{IntoScheduleConfigs, SystemSet};
 use bevy::time::{Time, TimerMode, Timer};
 use bevy::reflect::Reflect;
 use bevy::ecs::reflect::ReflectResource;
@@ -12,7 +13,7 @@ use std::ops::Add;
 use std::time::Duration;
 use chrono::NaiveDate;
 use chrono::naive::Days;
-use bevy::utils::HashMap;
+use bevy::platform_support::collections::HashMap;
 
 pub struct PGCalendarPlugin {
     pub active:         bool,
@@ -114,10 +115,10 @@ fn update_time(
             if calendar.current_weekday > 7 {
                 calendar.current_weekday = 1;
             } 
-            new_day_event.send(CalendarNewDayEvent {weekday: calendar.current_weekday });
+            new_day_event.write(CalendarNewDayEvent {weekday: calendar.current_weekday });
         }
 
-        new_hour_event.send(CalendarNewHourEvent { hour: calendar.current_hour });
+        new_hour_event.write(CalendarNewHourEvent { hour: calendar.current_hour });
     } 
 }
 
@@ -242,7 +243,7 @@ pub struct Weekdays{
 }
 impl Weekdays {
     pub fn new() -> Self {
-        let mut weekdays = Weekdays { data: HashMap::new() };
+        let mut weekdays = Weekdays { data: HashMap::default() };
         weekdays.data.insert(1, "Mon".to_string());
         weekdays.data.insert(2, "Tue".to_string());
         weekdays.data.insert(3, "Wed".to_string());
