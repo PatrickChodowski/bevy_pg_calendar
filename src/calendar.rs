@@ -13,7 +13,7 @@ use std::ops::Add;
 use std::time::Duration;
 use chrono::NaiveDate;
 use chrono::naive::Days;
-use bevy::platform_support::collections::HashMap;
+use bevy::platform::collections::HashMap;
 
 pub struct PGCalendarPlugin {
     pub active:         bool,
