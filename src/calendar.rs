@@ -2,7 +2,7 @@
 use bevy::app::{App, Plugin, PreUpdate};
 use bevy::ecs::system::{ResMut, Res};
 use bevy::ecs::resource::Resource;
-use bevy::ecs::event::{Event, EventWriter};
+use bevy::ecs::message::{Message, MessageWriter};
 use bevy::ecs::schedule::{IntoScheduleConfigs, SystemSet};
 use bevy::time::{Time, TimerMode, Timer};
 use bevy::reflect::Reflect;
@@ -39,8 +39,8 @@ impl Plugin for PGCalendarPlugin {
     fn build(&self, app: &mut App) {
         app
         .register_type::<Calendar>()
-        .add_event::<CalendarNewDayEvent>()
-        .add_event::<CalendarNewHourEvent>()
+        .add_message::<CalendarNewDayEvent>()
+        .add_message::<CalendarNewHourEvent>()
         .configure_sets(PreUpdate, PGCalendarSet::Calendar)
         .insert_resource(
             Calendar::new(
@@ -79,12 +79,12 @@ pub fn if_calendar_hour_length_changed(
     calendar.old_hour_length != calendar.hour_length
 }
 
-#[derive(Event)]
+#[derive(Message)]
 pub struct CalendarNewDayEvent {
     pub weekday:    u8
 }
 
-#[derive(Event)]
+#[derive(Message)]
 pub struct CalendarNewHourEvent {
     pub hour: u8
 }
@@ -95,14 +95,14 @@ fn update_time(
     time:                Res<Time>, 
     mut calendar_timer:  ResMut<CalendarTimer>, 
     mut calendar:        ResMut<Calendar>,
-    mut new_day_event:   EventWriter<CalendarNewDayEvent>,
-    mut new_hour_event:  EventWriter<CalendarNewHourEvent>
+    mut new_day_event:   MessageWriter<CalendarNewDayEvent>,
+    mut new_hour_event:  MessageWriter<CalendarNewHourEvent>
 ){
 
     calendar_timer.timer.tick(time.delta());
     calendar_timer.calc();
 
-    if calendar_timer.timer.finished(){
+    if calendar_timer.timer.is_finished(){
         calendar.current_hour += 1;
 
         if calendar.current_hour == 24 {
